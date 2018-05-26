@@ -50,7 +50,7 @@
     </style>
 </head>
 <body>
-    <select id="select" onchange="update()"></select>
+    <select id="select" onchange="update()"></select> <label><input type="checkbox" id="chkShowLegacy" onclick="javascript:update();" />Show legacy?</label>
     <span id="slots"></span>
     <div id="description"></div>
     <br>
@@ -216,7 +216,6 @@
             { "itemName": "Apparatus of Kwalish", "slots": "EEU", "quality": "epic", "legacyMount": false },
             { "itemName": "Armored Bear", "slots": "CRU", "quality": "epic", "legacyMount": false },
             { "itemName": "Axe Beak", "slots": "BIU", "quality": "epic", "legacyMount": false },
-            { "itemName": "Axe Beak (Legacy)", "slots": "BIU", "quality": "epic", "legacyMount": true },
             { "itemName": "Black Owlbear", "slots": "CCU", "quality": "epic", "legacyMount": false },
             { "itemName": "Blazing Yeth Hound", "slots": "BIU", "quality": "epic", "legacyMount": true },
             { "itemName": "Blueforged Rage Drake", "slots": "BIU", "quality": "epic", "legacyMount": false },
@@ -229,14 +228,12 @@
             { "itemName": "Embellished Apparatus of Gond", "slots": "CEU", "quality": "epic", "legacyMount": false },
             { "itemName": "Enchanted Courser", "slots": "IBU", "quality": "epic", "legacyMount": false },
             { "itemName": "Flail Snail", "slots": "BBU", "quality": "epic", "legacyMount": false },
-            { "itemName": "Flail Snail (Legacy)", "slots": "BBU", "quality": "epic", "legacyMount": true },
             { "itemName": "Frozen Yeth Hound", "slots": "BEU", "quality": "epic", "legacyMount": true },
             { "itemName": "Fungal Flail Snail", "slots": "BBU", "quality": "epic", "legacyMount": false },
             { "itemName": "Gas Spore", "slots": "IEU", "quality": "epic", "legacyMount": false },
             { "itemName": "Giant Beetle", "slots": "RRU", "quality": "epic", "legacyMount": false },
             { "itemName": "Giant Crab", "slots": "RBU", "quality": "epic", "legacyMount": false },
             { "itemName": "Giant Strider", "slots": "IIU", "quality": "epic", "legacyMount": false },
-            { "itemName": "Giant Strider (Legacy)", "slots": "IIU", "quality": "epic", "legacyMount": true },
             { "itemName": "Gorgon", "slots": "REU", "quality": "epic", "legacyMount": false },
             { "itemName": "Griffon", "slots": "CIU", "quality": "epic", "legacyMount": false },
             { "itemName": "Guard Drake", "slots": "RBU", "quality": "epic", "legacyMount": false },
@@ -353,6 +350,8 @@
 
         function update() {
             "use strict";
+            //debugger;
+            var showLegacy = document.getElementById("chkShowLegacy").checked;
             var selected = document.getElementById("select").selectedIndex;
             var bSlots = bonuses[selected].slots;
             document.getElementById("slots").textContent = bonuses[selected].wordySlots;
@@ -379,12 +378,16 @@
                 var link;
                 while (i < mounts.length) {
                     mSlots = mounts[i].slots;
-                    if (bonusMountMatch(bSlots, mSlots)) {
+                    if (bonusMountMatch(bSlots, mSlots) && (!mounts[i].legacyMount || (mounts[i].legacyMount && showLegacy)) ) {
                         row = table.insertRow(table.rows.length);
                         cell = row.insertCell(0);
                         link = document.createElement("a");
                         link.setAttribute("href", "http://neverwinter.gamepedia.com/" + mounts[i].itemName.replace(/\s/g, "_"));
                         link.textContent = mounts[i].itemName;
+                        if (mounts[i].legacyMount)
+                        {
+                            link.textContent += " (legacy)";
+                        }
                         cell.appendChild(link);
                         cell.className = "nowrap " + mounts[i].quality;
                         cell = row.insertCell(1);
@@ -462,5 +465,3 @@
 
 </body>
 </html>
-
-
