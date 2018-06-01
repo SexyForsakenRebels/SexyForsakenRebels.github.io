@@ -730,7 +730,7 @@
                         link.textContent += " (legacy)";
                     }
                     cell.appendChild(link);
-                    cell.className = "nowrap " + rings[i].Quality;
+                    cell.className = "nowrap " + rings[i].Quality.toLowerCase();
 
                     cell = row.insertCell(1);
                     cell.textContent = rings[i].RequiredLevel;
@@ -794,6 +794,7 @@
                 select.add(option);
                 i += 1;
             }
+            select.selectedIndex = 0;
             select = document.getElementById("selSlots");
             i = 0;
             while (i < slots.length)
@@ -805,6 +806,7 @@
                 select.add(option);
                 i += 1;
             }
+            select.selectedIndex = 0;
 
             var query = parseInt(location.search.slice(1));
             //if (query >= 0 && query < bonuses.length) {
