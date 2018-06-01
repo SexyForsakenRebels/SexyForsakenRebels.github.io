@@ -1,0 +1,43 @@
+﻿        td {
+            border: thin dotted black;
+        }
+
+            td.nowrap {
+                white-space: nowrap;
+            }
+
+            td.legendary {
+                border: medium ridge #f27900;
+            }
+
+            td.epic {
+                border: medium ridge #7a38ff;
+            }
+
+            td.rare {
+                border: medium ridge #3391e9;
+            }
+
+            td.uncommon {
+                border: medium ridge #84dc26;
+            }
+
+            td.common {
+                border: medium ridge #ffffff;
+            }
+
+            td.Universal {
+                background-color: #fff345;
+            }
+
+            td.FIXME {
+                background-color: #ff0000;
+            }
+
+        a {
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
