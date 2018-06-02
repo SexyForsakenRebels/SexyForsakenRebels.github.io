@@ -1,38 +1,38 @@
-﻿        td {
-            border: thin dotted black;
-        }
+﻿.results td {
+    border: thin dotted black;
+}
 
-            td.nowrap {
-                white-space: nowrap;
-            }
+.results td.nowrap {
+    white-space: nowrap;
+}
 
-            td.legendary {
-                border: medium ridge #f27900;
-            }
+.results td.legendary {
+    border: medium ridge #f27900;
+}
 
-            td.epic {
-                border: medium ridge #7a38ff;
-            }
+    .results td.epic {
+        border: medium ridge #7a38ff;
+    }
 
-            td.rare {
-                border: medium ridge #3391e9;
-            }
+    .results td.rare {
+        border: medium ridge #3391e9;
+    }
 
-            td.uncommon {
-                border: medium ridge #84dc26;
-            }
+    .results td.uncommon {
+        border: medium ridge #84dc26;
+    }
 
-            td.common {
-                border: medium ridge #ffffff;
-            }
+    .results #tbody #tr #td.common {
+        border: medium ridge #ffffff;
+    }
 
-            td.Universal {
-                background-color: #fff345;
-            }
+    .results #tbody #tr #td.Universal {
+        background-color: #fff345;
+    }
 
-            td.FIXME {
-                background-color: #ff0000;
-            }
+    .results #tbody #tr #td.FIXME {
+        background-color: #ff0000;
+    }
 
         a {
             text-decoration: none;
@@ -40,4 +40,20 @@
 
             a:hover {
                 text-decoration: underline;
+            }
+            .topAlign {
+                vertical-align: top;
+            }
+
+            .menuCell {
+                border-style: outset;
+                border-width: thick;
+                padding: 5px;
+            }
+
+            .selectedMenuCell 
+            {
+                border-style: inset;
+                border-width: thick;
+                padding: 5px;
             }

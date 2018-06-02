@@ -3,65 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Neverwinter Mount Insignia Bonuses - Updated 5/27/2018</title>
-    <style>
-        td {
-            border: thin dotted black;
-        }
-
-            td.nowrap {
-                white-space: nowrap;
-            }
-
-            td.legendary {
-                border: medium ridge #f27900;
-            }
-
-            td.epic {
-                border: medium ridge #7a38ff;
-            }
-
-            td.rare {
-                border: medium ridge #3391e9;
-            }
-
-            td.uncommon {
-                border: medium ridge #84dc26;
-            }
-
-            td.common {
-                border: medium ridge #ffffff;
-            }
-
-            td.Universal {
-                background-color: #fff345;
-            }
-
-            td.FIXME {
-                background-color: #ff0000;
-            }
-
-        a {
-            text-decoration: none;
-        }
-
-            a:hover {
-                text-decoration: underline;
-            }
-    </style>
+    <script>
+        var sLastUpdated = "5/27/2018";
+    </script>
+    <link rel="stylesheet" type="text/css" href="../Shared.css">
+    <script src="mounts.js"></script>
+    <script src="../Header.js"></script>
 </head>
 <body>
+    <script>writeHeader(1, false);</script>
     <select id="select" onchange="update()"></select> <label><input type="checkbox" id="chkShowLegacy" onclick="javascript:update();" />Show legacy?</label>
     <span id="slots"></span>
     <div id="description"></div>
     <br>
-    <table id="table1">
+    <table id="table1" class="results">
         <tr>
             <th>Bonus</th>
             <th>Insignia Required</th>
             <th>Description</th>
         </tr>
     </table>
-    <table id="table2">
+    <table id="table2" class="results">
         <tr>
             <th>Mount</th>
             <th>Slot 1</th>
@@ -86,213 +48,37 @@
         var bonuses = [
             { itemName: "bonuses", slots: "", description: "" },
             { itemName: "mounts", slots: "", description: "" },
-            {"itemName":"Alchemist's Invigoration","slots":"RII","description":"Whenever you drink a Healing Potion, you are granted 5% more Power and Defense for 10 seconds."},
-            {"itemName":"Alchemist's Refresher","slots":"RI","description":"Whenever you drink a Healing Potion, you are granted 2% more Power and Defense for 10 seconds."},
-            {"itemName":"Artificer's Influence","slots":"BI","description":"Whenever you use an Artifact Power, your Recovery, Movement, Action Point Gain, and Stamina Gain are increased by 5% of your Power for 15 seconds."},
-            {"itemName":"Artificer's Persuasion","slots":"BBI","description":"Whenever you use an Artifact Power, your Recovery, Movement, Action Point Gain, and Stamina Gain are increased by 10% of your Power for 15 seconds."},
-            {"itemName":"Assassin's Covenant","slots":"REE","description":"You lose 10% of your Defense, Deflection, and Life Steal, and gain the combination of lost stats as Power."},
-            {"itemName":"Barbarian's Delight","slots":"CE","description":"Whenever you perform a Critical Strike you are healed for 0.5% of your maximum Hit Points.\r\n\r\nThis effect can only occur once every 2 seconds."},
-            {"itemName":"Barbarian's Revelry","slots":"CEE","description":"Whenever you perform a Critical Strike you are healed for 1.5% of your maximum Hit Points.\r\n\r\nThis effect can only occur once every 2 seconds."},
-            {"itemName":"Berserker's Rage","slots":"BII","description":"While you have full Action Points, you gain 10% of your Armor Penetration as Power."},
-            {"itemName":"Cavalry's Warning","slots":"CBE","description":"Whenever you activate a Mount Combat Power, you gain an increase of 10% to your Power, Recovery, Armor Penetration, Critical Strike, Defense, Deflection, Regeneration, and Life Steal."},
-            {"itemName":"Champion's Return","slots":"IEE","description":"Whenever you are reduced to 50% Hit Points, you instantly recover 20% of your Stamina and are healed for 20% of your maximum Hit Points over 10 seconds.\r\n\r\nThis effect can only occur once every 60 seconds."},
-            {"itemName":"Champion's Struggle","slots":"IE","description":"Whenever you are reduced to 50% Hit Points, you instantly recover 10% of your Stamina and are healed for 10% of your maximum Hit Points over 10 seconds.\r\n\r\nThis effect can only occur once every 60 seconds."},
-            {"itemName":"Combatant's Maneuver","slots":"RRI","description":"Whenever you control an enemy, you gain 5% Combat Advantage damage for 10 seconds."},
-            {"itemName":"Gladiator's Guile","slots":"RIE","description":"When your Stamina is above 75%, you move 15% faster. When your Stamina is below 25%, you gain 15% of your Power as Stamina Gain"},
-            {"itemName":"Magistrate's Patience","slots":"BBE","description":"Whenever you perform a Critical Strike, your target will gain a stack of Magistrate's Consideration.\r\n\r\nEnemies affected by Magistrate's Consideration take Psychic Damage equal to 10% of your power over 4 seconds.\r\n\r\nAllies affected by Magistrates Consideration are healed for 3% of your maximum Hit Points over 4 seconds."},
-            {"itemName":"Magistrate's Restraint","slots":"BE","description":"Whenever you perform a Critical Strike, your target will gain a stack of Magistrate's Consideration.\r\n\r\nEnemies affected by Magistrate's Consideration take Psychic Damage equal to 10% of your power over 4 seconds.\r\n\r\nAllies affected by Magistrates Consideration are healed for 3% of your maximum Hit Points over 4 seconds."},
-            {"itemName":"Oppressor's Reprieve","slots":"CII","description":"Whenever you are Stunned, Knocked, or Immobilized, you are healed for 4% of your maximum Hit Points over 4 seconds."},
-            {"itemName":"Oppressor's Respite","slots":"CI","description":"Whenever you are Stunned, Knocked, or Immobilized, you are healed for 1% of your maximum Hit Points over 4 seconds."},
-            {"itemName":"Protector's Camaraderie","slots":"RRB","description":"Whenever your summoned Companion attacks, you gain 3% of your Power and Defense for 10 seconds. This effect can stack up to 4 times."},
-            {"itemName":"Protector's Friendship","slots":"RB","description":"Whenever your summoned Companion attacks, you gain 1% of your Power and Defense for 10 seconds. This effect can stack up to 4 times."},
-            {"itemName":"Shepherd's Devotion","slots":"RBI","description":"Whenever you use a Daily power, your teammates Defense, Deflection, and Movement are increased by 5% of your power for 10 seconds."},
-            {"itemName":"Slayer's Redemption","slots":"CCE","description":"Whenever you kill a target, you are healed for 10% of your maximum Hit Points over 5 seconds."},
-            {"itemName":"Survivor's Blessing","slots":"CCB","description":"Whenever you Deflect an attack, you are healed for 3% of your maximum Hit Points over 4 seconds."},
-            {"itemName":"Survivor's Gift","slots":"CB","description":"Whenever you Deflect an attack, you are healed for 1.2% of your maximum Hit Points over 4 seconds."},
-            {"itemName":"Vampire's Craving","slots":"CCR","description":"Whenever you perform a Life Steal you are healed for 3% of your maximum Hit Points over 4 seconds."},
-            {"itemName":"Vampire's Thirst","slots":"CR","description":"Whenever you perform a Life Steal you are healed for 1.2% of your maximum Hit Points over 4 seconds."},
-            {"itemName":"Victim's Preservation","slots":"CBB","description":"Whenever you take greater than 35% of your Maximum Hit Points in pre-mitigated damage from a single blow, you are healed for 10% of your maximum Hit Points over 5 seconds. This effect can occur once every 10 seconds."},
-            {"itemName":"Wanderer's Fortune","slots":"CRI","description":"You have a 4% chance after killing a foe to find a Refining Stone at your feet. After a few drops there is a one-day cooldown."},
-            {"itemName":"Warlord's Encouragement","slots":"RE","description":"Your summoned Companion does 10% more damage."},
-            {"itemName":"Warlord's Inspiration","slots":"RRE","description":"Your summoned Companion does 20% more damage."}]
+            { "itemName": "Alchemist's Invigoration", "slots": "RII", "description": "Whenever you drink a Healing Potion, you are granted 5% more Power and Defense for 10 seconds." },
+            { "itemName": "Alchemist's Refresher", "slots": "RI", "description": "Whenever you drink a Healing Potion, you are granted 2% more Power and Defense for 10 seconds." },
+            { "itemName": "Artificer's Influence", "slots": "BI", "description": "Whenever you use an Artifact Power, your Recovery, Movement, Action Point Gain, and Stamina Gain are increased by 5% of your Power for 15 seconds." },
+            { "itemName": "Artificer's Persuasion", "slots": "BBI", "description": "Whenever you use an Artifact Power, your Recovery, Movement, Action Point Gain, and Stamina Gain are increased by 10% of your Power for 15 seconds." },
+            { "itemName": "Assassin's Covenant", "slots": "REE", "description": "You lose 10% of your Defense, Deflection, and Life Steal, and gain the combination of lost stats as Power." },
+            { "itemName": "Barbarian's Delight", "slots": "CE", "description": "Whenever you perform a Critical Strike you are healed for 0.5% of your maximum Hit Points.\r\n\r\nThis effect can only occur once every 2 seconds." },
+            { "itemName": "Barbarian's Revelry", "slots": "CEE", "description": "Whenever you perform a Critical Strike you are healed for 1.5% of your maximum Hit Points.\r\n\r\nThis effect can only occur once every 2 seconds." },
+            { "itemName": "Berserker's Rage", "slots": "BII", "description": "While you have full Action Points, you gain 10% of your Armor Penetration as Power." },
+            { "itemName": "Cavalry's Warning", "slots": "CBE", "description": "Whenever you activate a Mount Combat Power, you gain an increase of 10% to your Power, Recovery, Armor Penetration, Critical Strike, Defense, Deflection, Regeneration, and Life Steal." },
+            { "itemName": "Champion's Return", "slots": "IEE", "description": "Whenever you are reduced to 50% Hit Points, you instantly recover 20% of your Stamina and are healed for 20% of your maximum Hit Points over 10 seconds.\r\n\r\nThis effect can only occur once every 60 seconds." },
+            { "itemName": "Champion's Struggle", "slots": "IE", "description": "Whenever you are reduced to 50% Hit Points, you instantly recover 10% of your Stamina and are healed for 10% of your maximum Hit Points over 10 seconds.\r\n\r\nThis effect can only occur once every 60 seconds." },
+            { "itemName": "Combatant's Maneuver", "slots": "RRI", "description": "Whenever you control an enemy, you gain 5% Combat Advantage damage for 10 seconds." },
+            { "itemName": "Gladiator's Guile", "slots": "RIE", "description": "When your Stamina is above 75%, you move 15% faster. When your Stamina is below 25%, you gain 15% of your Power as Stamina Gain" },
+            { "itemName": "Magistrate's Patience", "slots": "BBE", "description": "Whenever you perform a Critical Strike, your target will gain a stack of Magistrate's Consideration.\r\n\r\nEnemies affected by Magistrate's Consideration take Psychic Damage equal to 10% of your power over 4 seconds.\r\n\r\nAllies affected by Magistrates Consideration are healed for 3% of your maximum Hit Points over 4 seconds." },
+            { "itemName": "Magistrate's Restraint", "slots": "BE", "description": "Whenever you perform a Critical Strike, your target will gain a stack of Magistrate's Consideration.\r\n\r\nEnemies affected by Magistrate's Consideration take Psychic Damage equal to 10% of your power over 4 seconds.\r\n\r\nAllies affected by Magistrates Consideration are healed for 3% of your maximum Hit Points over 4 seconds." },
+            { "itemName": "Oppressor's Reprieve", "slots": "CII", "description": "Whenever you are Stunned, Knocked, or Immobilized, you are healed for 4% of your maximum Hit Points over 4 seconds." },
+            { "itemName": "Oppressor's Respite", "slots": "CI", "description": "Whenever you are Stunned, Knocked, or Immobilized, you are healed for 1% of your maximum Hit Points over 4 seconds." },
+            { "itemName": "Protector's Camaraderie", "slots": "RRB", "description": "Whenever your summoned Companion attacks, you gain 3% of your Power and Defense for 10 seconds. This effect can stack up to 4 times." },
+            { "itemName": "Protector's Friendship", "slots": "RB", "description": "Whenever your summoned Companion attacks, you gain 1% of your Power and Defense for 10 seconds. This effect can stack up to 4 times." },
+            { "itemName": "Shepherd's Devotion", "slots": "RBI", "description": "Whenever you use a Daily power, your teammates Defense, Deflection, and Movement are increased by 5% of your power for 10 seconds." },
+            { "itemName": "Slayer's Redemption", "slots": "CCE", "description": "Whenever you kill a target, you are healed for 10% of your maximum Hit Points over 5 seconds." },
+            { "itemName": "Survivor's Blessing", "slots": "CCB", "description": "Whenever you Deflect an attack, you are healed for 3% of your maximum Hit Points over 4 seconds." },
+            { "itemName": "Survivor's Gift", "slots": "CB", "description": "Whenever you Deflect an attack, you are healed for 1.2% of your maximum Hit Points over 4 seconds." },
+            { "itemName": "Vampire's Craving", "slots": "CCR", "description": "Whenever you perform a Life Steal you are healed for 3% of your maximum Hit Points over 4 seconds." },
+            { "itemName": "Vampire's Thirst", "slots": "CR", "description": "Whenever you perform a Life Steal you are healed for 1.2% of your maximum Hit Points over 4 seconds." },
+            { "itemName": "Victim's Preservation", "slots": "CBB", "description": "Whenever you take greater than 35% of your Maximum Hit Points in pre-mitigated damage from a single blow, you are healed for 10% of your maximum Hit Points over 5 seconds. This effect can occur once every 10 seconds." },
+            { "itemName": "Wanderer's Fortune", "slots": "CRI", "description": "You have a 4% chance after killing a foe to find a Refining Stone at your feet. After a few drops there is a one-day cooldown." },
+            { "itemName": "Warlord's Encouragement", "slots": "RE", "description": "Your summoned Companion does 10% more damage." },
+            { "itemName": "Warlord's Inspiration", "slots": "RRE", "description": "Your summoned Companion does 20% more damage." }]
             ;
 
-        var mounts = [
-            { "itemName": "Arcane Whirlwind", "slots": "BUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Power", "combatPower": "Summons your Arcane Whirlwind, who travels forward, dealing 2,796 damage to nearby enemies, and knocking aside enemies it collides with for an additional 5,591 damage." },
-            { "itemName": "Armored Axe Beak", "slots": "CUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Armor Penetration", "combatPower": "Summons your armored axe beak to attack nearby foes with a spinning strike dealing 6,989 to targets hit." },
-            { "itemName": "Armored Bulette", "slots": "CUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Deflection", "combatPower": "Summons your Armored Bulette, who roars at foes in front of you, dealing 3,994 damage and reducing the damage they deal by 10% for 8 seconds." },
-            { "itemName": "Armored Giant Strider", "slots": "IUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Movement", "combatPower": "Summons your Armored Giant Strider to attack your target, dealing 3,455 Fire Damage damage." },
-            { "itemName": "Armored Griffon", "slots": "CUU", "quality": "legendary", "legacyMount": false, "equipPower": "Activating an Artifact power reduces all of your cooldowns by 35%.", "combatPower": "Summon your Armored Griffon to release an earsplitting screech, reducing the damage nearby enemies deal by 30% for 6 seconds." },
-            { "itemName": "Beholder Personal Tank", "slots": "EUU", "quality": "legendary", "legacyMount": false, "equipPower": "Reduce the damage effect of Combat Advantage against you by 50%.", "combatPower": "Summon your Beholder Personal Tank to blast enemies with disintegration beams in a line, dealing 6,989 damage. Any targets with less remaining health than your total Power take 500% normal damage and are disintegrated if killed." },
-            { "itemName": "Black Ice Warhorse", "slots": "BUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Power", "combatPower": "Summons your Black Ice Warhorse, who deals 3,494 Lightning Damage every 0.5 seconds for 1.5 seconds." },
-            { "itemName": "Celestial Stag", "slots": "IUU", "quality": "legendary", "legacyMount": false, "equipPower": "+2,000 Recovery +2,000 Regeneration", "combatPower": "Summon your Celestial Stag that brings with it a rain of stars for 8 seconds, continually causing 699 damage to your enemies and slowing their Run Speed by 10%." },
-            { "itemName": "Champion's Armored Bulette", "slots": "CUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Deflection", "combatPower": "Summons your Champion's Armored Bulette, who roars at foes in front of you. Dealing 3,994 Thunder Damage and Stunning them for 2 seconds (1 second if target is a player)." },
-            { "itemName": "Coastal Flail Snail", "slots": "BUU", "quality": "legendary", "legacyMount": false, "equipPower": "Using a Daily Power grants 25% of your total Action Points over 10 seconds", "combatPower": "Summons your Flail Snail to knock enemies aside, dealing 1,727 to targets hit." },
-            { "itemName": "Commander Tyrannosaur", "slots": "RUU", "quality": "legendary", "legacyMount": false, "equipPower": "+2,000 Power +2,000 Armor Penetration", "combatPower": "Summons the Tyrannosaur, causing your enemies fear, rooting them for 5 seconds, and lowering their defense by 10% for 10 seconds.\r\nIf targeting a minion, the Tyrannosaurus will consume them." },
-            { "itemName": "Emperor Beetle", "slots": "RUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Defense", "combatPower": "Summons your Emperor Beetle, who flies in and lands violently, dealing 3,494 and Stunning nearby foes for 2 seconds (1 second if target is a player)." },
-            { "itemName": "Imperial Rage Drake", "slots": "RUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Critical Strike", "combatPower": "Summons your Imperial Rage Drake, who rushes forward, dealing 4,659 Fire Damage and igniting foes, causing them to take an additional 4,659 Fire Damage over 4 seconds (1,165 Fire Damage every second)." },
-            { "itemName": "Legendary Carpet of Flying", "slots": "IUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Defense", "combatPower": "The Carpet of Flying rushes in and circles the target causing a vortex which pulls nearby enemies towards the center. All enemies caught in the vortex take periodic damage based on their level." },
-            { "itemName": "Runeclad Manticore", "slots": "BUU", "quality": "legendary", "legacyMount": false, "equipPower": "+1000 Power and Defense\r\n+500 Power and Defense to party members within 50'", "combatPower": "Summon your Runeclad Manticore to unleash a torrent of spines from its barbed tail upon your foes, dealing 1,456 damage in a cone, knocking them back and pinning them down for 1.5 seconds." },
-            { "itemName": "Skeleton Steed", "slots": "IUU", "quality": "legendary", "legacyMount": false, "equipPower": "Using a Daily Power grants 20% of your total Hit Points over 10 seconds.", "combatPower": "Your Skeletal Steed unieashes a trail of ink black smoke, withering foes in front of you for 6 seconds, Slowing them and dealing 1,398 Necrotic Damage every second." },
-            { "itemName": "Swift Golden Lion", "slots": "IUU", "quality": "legendary", "legacyMount": false, "equipPower": "When you or a party member are struck by a foe, there is a chance they will be healed and you will gain a stack of Radiant Weapon.", "combatPower": "Summon your Celestial Lion to knock back nearby foes and grant nearby party members a Shield for 10 seconds. After 10 seconds, affected party members gain up to 3 stacks of Radiant Weapon based on the amount shield remaining." },
-            { "itemName": "Tenser's Floating Disk", "slots": "EUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Recovery", "combatPower": "You are transformed into a virtual fighting machine, becoming stronger, tougher, faster, and more skilled in combat. For 12 seconds, you gain 10% Power and move 10% faster, and gain +2 Strength, Dexterity, Constitution, and Armor Class." },
-            { "itemName": "War Triceratops", "slots": "RUU", "quality": "legendary", "legacyMount": false, "equipPower": "+16,000 Maximum Hit Points", "combatPower": "Summon your War Triceratops to change into the fray knocking back foes and causing up to 15,000 damage to each target, based on your level." },
-            { "itemName": "Warpainted Tyrannosaur", "slots": "RUU", "quality": "legendary", "legacyMount": false, "equipPower": "+2,000 Power +2,000 Armor Penetration", "combatPower": "Summons the Tyrannosaur, causing your enemies fear, rooting them for 5 seconds, and lowering their defense by 10% for 10 seconds.\r\nIf targeting a minion, the Tyrannosaurus will consume them." },
-            { "itemName": "Apparatus of Gond", "slots": "REU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Power", "combatPower": "" },
-            { "itemName": "Apparatus of Kwalish", "slots": "EEU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Recovery", "combatPower": "" },
-            { "itemName": "Armored Bear", "slots": "CRU", "quality": "epic", "legacyMount": false, "equipPower": "+8,000 Maximum Hit Points", "combatPower": "" },
-            { "itemName": "Axe Beak", "slots": "BIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Armor Penetration", "combatPower": "" },
-            { "itemName": "Black Owlbear", "slots": "CCU", "quality": "epic", "legacyMount": false, "equipPower": "+8,000 Maximum Hit Points", "combatPower": "" },
-            { "itemName": "Blazing Yeth Hound", "slots": "BIU", "quality": "epic", "legacyMount": true, "equipPower": null, "combatPower": null },
-            { "itemName": "Blueforged Rage Drake", "slots": "BIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Critical Strike", "combatPower": "" },
-            { "itemName": "Bulette", "slots": "CRU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Deflection", "combatPower": "" },
-            { "itemName": "Carpet of Flying", "slots": "IUU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Defense", "combatPower": "" },
-            { "itemName": "Cavalry Tyrannosaur", "slots": "RBU", "quality": "epic", "legacyMount": false, "equipPower": "+1,000 Power +1,000 Armor Penetration", "combatPower": "" },
-            { "itemName": "Dawn Unicorn", "slots": "RIU", "quality": "epic", "legacyMount": false, "equipPower": "Using a Daily Power grants 10% of your total Hit Points over 10 seconds.", "combatPower": "" },
-            { "itemName": "Dusk Unicorn", "slots": "CEU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Life Steal", "combatPower": "" },
-            { "itemName": "Elite Shadow Wolf", "slots": "CIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Armor Penetration", "combatPower": "" },
-            { "itemName": "Embellished Apparatus of Gond", "slots": "CEU", "quality": "epic", "legacyMount": false, "equipPower": "Using a Daily Power grants 15% of your total Action Points over 10 seconds.", "combatPower": "" },
-            { "itemName": "Enchanted Courser", "slots": "IBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Recovery", "combatPower": "" },
-            { "itemName": "Flail Snail", "slots": "BBU", "quality": "epic", "legacyMount": false, "equipPower": "Using a Daily Power grants 15% of your total Action Points over 10 seconds.", "combatPower": "" },
-            { "itemName": "Frozen Yeth Hound", "slots": "BEU", "quality": "epic", "legacyMount": true, "equipPower": null, "combatPower": null },
-            { "itemName": "Fungal Flail Snail", "slots": "BBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Recovery", "combatPower": "" },
-            { "itemName": "Gas Spore", "slots": "IEU", "quality": "epic", "legacyMount": false, "equipPower": "Increases your Stamina Regeneration by 20%.\r\nStamina Regeneration is increased by an additional 10% while under the effect of Underdark Mount & Companion Affinity.", "combatPower": "" },
-            { "itemName": "Giant Beetle", "slots": "RRU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Defense", "combatPower": "" },
-            { "itemName": "Giant Crab", "slots": "RBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Defense", "combatPower": "" },
-            { "itemName": "Giant Strider", "slots": "IIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Movement", "combatPower": "" },
-            { "itemName": "Gorgon", "slots": "REU", "quality": "epic", "legacyMount": false, "equipPower": "Using a Daily Power grants 15% of your total Action Points over 10 seconds.", "combatPower": "" },
-            { "itemName": "Griffon", "slots": "CIU", "quality": "epic", "legacyMount": false, "equipPower": "Activating an Artifact power reduces all of your cooldowns by 20%.", "combatPower": "" },
-            { "itemName": "Guard Drake", "slots": "RBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Power", "combatPower": "" },
-            { "itemName": "Heavy Giant Spider", "slots": "RIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Power", "combatPower": "" },
-            { "itemName": "Heavy Howler", "slots": "CBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Critical Strike", "combatPower": "" },
-            { "itemName": "Heavy Inferno Nightmare", "slots": "CIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Life Steal", "combatPower": "" },
-            { "itemName": "Heavy Mystic Nightmare", "slots": "IEU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Life Steal", "combatPower": "" },
-            { "itemName": "Heavy Twilight Nightmare", "slots": "CCU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Power", "combatPower": "" },
-            { "itemName": "Heavy Worg", "slots": "BEU", "quality": "epic", "legacyMount": false, "equipPower": "+1,000 Critical Strike +1,000 Armor Penetration", "combatPower": "" },
-            { "itemName": "High Forest Bear", "slots": "CRU", "quality": "epic", "legacyMount": false, "equipPower": "+8,000 Maximum Hit Points", "combatPower": "" },
-            { "itemName": "Leopard of Chult", "slots": "BIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Recovery", "combatPower": "" },
-            { "itemName": "Lord's Armored Polar Bear", "slots": "RIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Defense", "combatPower": "" },
-            { "itemName": "Manticore", "slots": "BEU", "quality": "epic", "legacyMount": false, "equipPower": "+500 Power and Defense\r\n+250 Power and Defense to party members within 50'", "combatPower": "" },
-            { "itemName": "Medium Adventurer's Horse", "slots": "CBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Movement", "combatPower": "" },
-            { "itemName": "Owlbear", "slots": "CEU", "quality": "epic", "legacyMount": false, "equipPower": "+8,000 Hit Point", "combatPower": "" },
-            { "itemName": "Purple Owlbear", "slots": "RRU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Power", "combatPower": "" },
-            { "itemName": "Rage Drake", "slots": "BIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Critical Strike", "combatPower": "" },
-            { "itemName": "Royal Winter Sled", "slots": "EU", "quality": "epic", "legacyMount": false, "equipPower": "+500 Power and Defense\r\n+250 Power and Defense to party members within 50'", "combatPower": "" },
-            { "itemName": "Savage Polar Bear", "slots": "BBU", "quality": "epic", "legacyMount": false, "equipPower": "+1,000 Defense +1,000 Deflection", "combatPower": "" },
-            { "itemName": "Siegebreaker Griffon", "slots": "CIU", "quality": "epic", "legacyMount": false, "equipPower": "+1,000 Defense +1,000 Deflection", "combatPower": "" },
-            { "itemName": "Silverback Bear", "slots": "IEU", "quality": "epic", "legacyMount": false, "equipPower": "Using a Daily Power grants 10% of your total Hit Points over 10 seconds.", "combatPower": "" },
-            { "itemName": "Skeletal Worg", "slots": "BBU", "quality": "epic", "legacyMount": false, "equipPower": "+1,000 Power +1,000 Armor Penetration", "combatPower": "" },
-            { "itemName": "Spiked Deinonychus", "slots": "REU", "quality": "epic", "legacyMount": false, "equipPower": "+1,000 Recovery +1,000 Defense", "combatPower": "" },
-            { "itemName": "Starfade Stag", "slots": "IEU", "quality": "epic", "legacyMount": false, "equipPower": "+1,000 Recovery +1,000 Regeneration", "combatPower": "" },
-            { "itemName": "Stormraider Clydesdale", "slots": "REU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Movement", "combatPower": "" },
-            { "itemName": "Striped Owlbear", "slots": "IIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Defense", "combatPower": "" },
-            { "itemName": "Suratuk's Banded Spider", "slots": "CRU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Life Steal", "combatPower": "" },
-            { "itemName": "Suratuk's Blue Tarantula", "slots": "BBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Critical Strike", "combatPower": "" },
-            { "itemName": "Suratuk's Giant Red Crab", "slots": "RBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Defense", "combatPower": "" },
-            { "itemName": "Sylvan Stag", "slots": "BEU", "quality": "epic", "legacyMount": false, "equipPower": "Using a Daily Power grants 10% of your total Hit Points over 10 seconds.", "combatPower": "" },
-            { "itemName": "Tiger-striped Owlbear", "slots": "BBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Armor Penetration", "combatPower": "" },
-            { "itemName": "Triceratops", "slots": "RBU", "quality": "epic", "legacyMount": false, "equipPower": "+8,000 Maximum Hit Points", "combatPower": "" },
-            { "itemName": "Turmish Lion", "slots": "IRU", "quality": "epic", "legacyMount": false, "equipPower": "When you or a party member are struck by a foe, there is a chance you will gain a stack of Ferocity, granting you 2% additional damage as physical damage for 10 seconds. Thi effect may stack up to 3 times.", "combatPower": "" },
-            { "itemName": "Whirlwind", "slots": "BBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Power", "combatPower": "" },
-            { "itemName": "White Owlbear", "slots": "EEU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Recovery", "combatPower": "" },
-            { "itemName": "White Tiger", "slots": "RBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Armor Penetration", "combatPower": "" },
-            { "itemName": "Yeth Hound", "slots": "CBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Deflection", "combatPower": "" },
-            { "itemName": "Aberrant Drake", "slots": "BII", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Aberrant Fey Wolf", "slots": "REE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Aberrant Gorgon", "slots": "BIU", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Aberrant Yeth Hound", "slots": "RCC", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Arkaiun Courser", "slots": "RRB", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Armored Ghost Horse", "slots": "CCB", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Black Stallion", "slots": "RIE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Buckskin Destrier", "slots": "BBE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Eku's Titivated Lion", "slots": "ERC", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Fey Gorgon", "slots": "EIU", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Firesoul Gorgon", "slots": "CEU", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Forest Flail Snail", "slots": "BBU", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Forest Wolf of the Wild Hunt", "slots": "CII", "quality": "rare", "legacyMount": true, "equipPower": null, "combatPower": null },
-            { "itemName": "Frosted Wolf of the Wild Hunt", "slots": "CEE", "quality": "rare", "legacyMount": true, "equipPower": null, "combatPower": null },
-            { "itemName": "Frozen Demon Sled", "slots": "CCR", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Frozen Winter Sled", "slots": "EU", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Gelatinous Cube", "slots": "RII", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Gilded Giant Spider", "slots": "CRI", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Golden Brindle Horse", "slots": "RRE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Green Owlbear", "slots": "CEE", "quality": "rare", "legacyMount": true, "equipPower": null, "combatPower": null },
-            { "itemName": "Hell Emblazon Worg", "slots": "IEE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Hell Hound", "slots": "CCR", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Howler", "slots": "CBE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Medium Black Horse", "slots": "RRB", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Medium Palomino Horse", "slots": "CBE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Medium Pharaoh Steed", "slots": "CCB", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Medium Snowswift Horse", "slots": "CII", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Medium Tiger", "slots": "BBE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Medium Waterdeep Horse", "slots": "BBI", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Medium White Horse", "slots": "BBI", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Medium Worg", "slots": "RRE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Moonbear", "slots": "BII", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Moss-daubed Horse", "slots": "RIE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Neverwinter Champion's Charger", "slots": "IEE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Panther", "slots": "CCE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Poisonous Looking Spider", "slots": "BBE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Polar Bear", "slots": "CEE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Reanimated Destrier", "slots": "IEE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Sabino Destrier", "slots": "RBI", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Small Forest Stag", "slots": "RBI", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Snowclad Manticore", "slots": "CRE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Soot Tribal Lion", "slots": "IRU", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Suratuk's Blue Strider", "slots": "BIU", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Suratuk's Giant Sunset Crab", "slots": "RBI", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Suratuk's Jungle Spider", "slots": "CRI", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Suratuk's Orange Tarantula", "slots": "BBE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Suratuk's Red-Dusted Axebeak", "slots": "CIR", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Suratuk's Ruby Strider", "slots": "RBR", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Suratuk's Teal Spider", "slots": "CRI", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Trained Grizzly", "slots": "RRB", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Tuigan Courser", "slots": "BBI", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Water Horse", "slots": "RII", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Wolf of the Wild Hunt", "slots": "RIE", "quality": "rare", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Amnian Horse", "slots": "IU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Amphail Fancy Horse", "slots": "RU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Armored Boar", "slots": "BU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Ashen Brindle Horse", "slots": "CU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Autumn Stag", "slots": "CU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Bay Zakharan Horse", "slots": "RU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Black Horse", "slots": "RU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Blue Ribbon Pig", "slots": "RU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Calimshan Horse", "slots": "BU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Crag Cat", "slots": "BU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Dappled Riding Horse", "slots": "IU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Deinonychus", "slots": "BU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Demon Sled", "slots": "CU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Electric Tiger", "slots": "RI", "quality": "uncommon", "legacyMount": true, "equipPower": null, "combatPower": null },
-            { "itemName": "Fey Wolf", "slots": "CU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Frozen Polar Bear", "slots": "RU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Gilded White Steed", "slots": "RU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Grey Horse", "slots": "", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Grullo Zakharan Horse", "slots": "", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Ice Panther", "slots": "BU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Inferno Nightmare", "slots": "IU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Jubilee Parade Horse", "slots": "RU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Jubilee Unicorn", "slots": "RU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Onyx Horse", "slots": "IU", "quality": "uncommon", "legacyMount": true, "equipPower": null, "combatPower": null },
-            { "itemName": "Pale Horse", "slots": "EU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Pharaoh Steed", "slots": "BU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Rainbow Starry Panther", "slots": "IU", "quality": "uncommon", "legacyMount": true, "equipPower": null, "combatPower": null },
-            { "itemName": "Shadow Wolf", "slots": "CU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Starry Panther", "slots": "CU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Stormraider Horse", "slots": "IU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Sunite Steed", "slots": "EU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Tethyr Horse", "slots": "EU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Tribal Polar Bear", "slots": "BI", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "White Horse", "slots": "IU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Winter Sled", "slots": "EU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Winter Stag", "slots": "CU", "quality": "uncommon", "legacyMount": true, "equipPower": null, "combatPower": null },
-            { "itemName": "Winter Wolf", "slots": "BU", "quality": "uncommon", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Appaloosa Horse", "slots": "CI", "quality": "common", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Boar", "slots": "RI", "quality": "common", "legacyMount": true, "equipPower": null, "combatPower": null },
-            { "itemName": "Brindle Horse", "slots": "CB", "quality": "common", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Palomino Horse", "slots": "RB", "quality": "common", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Sabino Horse", "slots": "RE", "quality": "common", "legacyMount": false, "equipPower": "", "combatPower": "" },
-            { "itemName": "Waterdeep Horse", "slots": "IE", "quality": "common", "legacyMount": false, "equipPower": "", "combatPower": "" }];
 
         function wordySlots(slots) {
             "use strict";
@@ -380,14 +166,14 @@
                 var link;
                 while (i < mounts.length) {
                     mSlots = mounts[i].slots;
-                    if (bonusMountMatch(bSlots, mSlots) && (!mounts[i].legacyMount || (mounts[i].legacyMount && showLegacy)) ) {
+                    if (bonusMountMatch(bSlots, mSlots) && (!mounts[i].legacyMount || (mounts[i].legacyMount && showLegacy))) {
                         row = table.insertRow(table.rows.length);
                         cell = row.insertCell(0);
                         link = document.createElement("a");
                         link.setAttribute("href", "http://neverwinter.gamepedia.com/" + mounts[i].itemName.replace(/\s/g, "_"));
                         link.textContent = mounts[i].itemName;
-                        if (mounts[i].legacyMount)
-                        {
+                        link.target = "_blank";
+                        if (mounts[i].legacyMount) {
                             link.textContent += " (legacy)";
                         }
                         cell.appendChild(link);
