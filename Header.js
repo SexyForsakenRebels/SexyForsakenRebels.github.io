@@ -19,7 +19,7 @@ function writeMenuCell(linkText, linkURL, linkURLBase, fromHome) {
 
     document.write("<th class=\"" + (bSelected ? "selectedMenuCell" : "menuCell") + "\">");
 
-    if (location.href.toLowerCase().indexOf(linkURLBase) == -1) {
+    if (!bSelected) {
         document.write("<a href=\"" + linkURL + "\">" + linkText + "</a>");
     }
     else {
