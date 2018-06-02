@@ -5,7 +5,7 @@
         sRoot += "../";
         linkDepth--;
     }
-    document.write("<table>");
+    document.write("<table class=\"mainHeader\">");
     document.write("<tr>");
     writeMenuCell("Home", sRoot, null, fromHome);
     writeMenuCell("Rings", sRoot + "rings", "rings", false);

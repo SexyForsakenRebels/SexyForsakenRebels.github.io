@@ -2,6 +2,10 @@
     border: thin dotted black;
 }
 
+.mainHeader td,th {
+    border-color: lightgrey
+}
+
 .results td.nowrap {
     white-space: nowrap;
 }
