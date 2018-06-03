@@ -10,6 +10,7 @@
     writeMenuCell("Home", sRoot, null, fromHome);
     writeMenuCell("Rings", sRoot + "rings", "rings", false);
     writeMenuCell("Mounts", sRoot + "insigniaBonus", "insigniabonus", false);
+    writeMenuCell("Companions", sRoot + "companions", "companions", false);
     document.write("</tr>");
     document.write("</table>");
 }

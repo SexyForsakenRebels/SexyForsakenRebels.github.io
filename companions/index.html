@@ -1,0 +1,455 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Neverwinter Companions - Updated 6/2/2018</title>
+    <script>
+        var sLastUpdated = "6/2/2018";
+    </script>
+    <link rel="stylesheet" type="text/css" href="../Shared.css">
+    <script src="companions.js"></script>
+    <script src="../Header.js"></script>
+</head>
+<body>
+    <script>writeHeader(1, false);</script>
+    <table border="0" style="border-style: none">
+        <tr class="topAlign">
+            <td><select id="selBonus" onchange="update()" multiple size="12" class="topAlign"></select><br /><span id="bonuses"></span></td>
+            <td>
+                <table border="0">
+                    <tr class="topAlign">
+                        <td height="20%"><select id="selSlots" onchange="update()" class="topAlign" size="6" multiple></select></td>
+                        <td height="20%"><select id="selTypes" onchange="update()" class="topAlign" size="6" multiple></select><br /><span id="types"></span></td>
+                        <td height="20%"><label class="topAlign"><input type="checkbox" id="chkShowPowers" onclick="javascript:update();" class="topAlign" />Show powers?</label></td>
+                        <td height="20%"><label class="topAlign"><input type="checkbox" id="chkShowLegacy" onclick="javascript:update();" class="topAlign" />Show legacy?</label></td>
+                        <td height="20%">
+                            <select id="selSortOrder" onchange="update()">
+                                <option value="1">Quality, Item Level, Item Name</option>
+                                <option value="2">Quality, Item Name</option>
+                                <option value="3">Item Name</option>
+                                <option value="4">Item Level, Item Name</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5"><span id="slots"></span></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table id="table1" class="results">
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Details</th>
+            <th>Item Level</th>
+            <th>Slots</th>
+            <th>Active Bonus</th>
+            <th>Cool Downs</th>
+            <th>Powers</th>
+            <th>Stats</th>
+            <th>Item Slots</th>
+        </tr>
+    </table>
+    <script>
+
+        var slotTypes = {
+            O: "Offense",
+            D: "Defense"
+        };
+
+        var slots = [
+            { slotTypes: "", enumValue: 0},
+            { slotTypes: "OOO", enumValue: 1},
+            { slotTypes: "OOD", enumValue: 2 },
+            { slotTypes: "ODD", enumValue: 4 },
+            { slotTypes: "DDD", enumValue: 8 }
+        ];
+
+        var types = [
+            { CompanionType: "", enumValue: 0 },
+            { CompanionType: "Augment", enumValue: 1 },
+            { CompanionType: "Controller", enumValue: 2 },
+            { CompanionType: "Defender", enumValue: 4 },
+            { CompanionType: "Leader", enumValue: 8 },
+            { CompanionType: "Striker", enumValue: 16 },
+        ];
+
+        var bonuses = [
+            { BonusName: "", BonusEnum: 0},
+            { BonusName: "Power", BonusEnum: 1},
+            { BonusName: "Critical Strike", BonusEnum: 2 },
+            { BonusName: "Armor Penetration", BonusEnum: 4 },
+            { BonusName: "Defense", BonusEnum: 8},
+            { BonusName: "Deflection", BonusEnum: 16 },
+            { BonusName: "Recovery", BonusEnum: 32 },
+            { BonusName: "Life Steal", BonusEnum: 64 },
+            { BonusName: "Regeneration", BonusEnum: 128 },
+            { BonusName: "Hit Points", BonusEnum: 256 },
+            { BonusName: "Damage", BonusEnum: 512 },
+            { BonusName: "%", BonusEnum: 1024 },
+        ];
+
+
+
+        function slotsMatch( slotEnum, slotsString )
+        {
+            var i = 0;
+            if (slotEnum == 0) { return true;}
+            while (i < slots.length)
+            {
+                var thisValue = slots[i].enumValue;
+                if (thisValue > 0)
+                {
+                    if ((thisValue & slotEnum) == thisValue) {
+                        if (slotsString == slots[i].slotTypes) {
+                            return true;
+                        }
+                    }
+                }
+                i++;
+            }
+            return false; // no values match everything
+        }
+
+        function typesMatch(typeEnum, typeString) {
+            var i = 0;
+            if (typeEnum == 0) { return true; }
+            while (i < types.length) {
+                var thisValue = types[i].enumValue;
+                if (thisValue > 0) {
+                    if ((thisValue & typeEnum) == thisValue) {
+                        if (typeString == types[i].CompanionType) {
+                            return true;
+                        }
+                    }
+                }
+                i++;
+            }
+            return false; // no values match everything
+        }
+
+        function bonusMatch( bonusEnum, bonusString)
+        {
+            var i = 0;
+            while (i < bonuses.length) {
+                var thisValue = bonuses[i].BonusEnum;
+                if (thisValue != "")
+                {
+                    if ((thisValue & bonusEnum) == thisValue) {
+                        var iMatch = bonusString.toLowerCase().indexOf(bonuses[i].BonusName.toLowerCase());
+                        if (iMatch == -1) {
+                            return false; // anything missing fails the match
+                        }
+                    }
+                }
+                i++;
+            }
+            return true; // no values match everything
+        }
+
+        function getTypeEnum(bLoadSpan) {
+            var selectedTypes = 0;
+            var selTypes = document.getElementById("selTypes");
+            var span = document.getElementById("types");
+            if (bLoadSpan) span.innerText = "";
+            var i = 1;
+            while (i < selTypes.options.length) {
+                var opt = selTypes.options[i];
+                if (opt.selected) {
+                    selectedTypes += types[opt.value].enumValue;
+                    if (bLoadSpan) {
+                        span.innerText += (span.innerText.length > 0 ? ", " : "") + types[opt.value].CompanionType;
+                    }
+                }
+                i += 1;
+            }
+            return selectedTypes;
+        }
+
+        function getBonusEnum(bLoadSpan) {
+            var selectedBonuses = 0;
+            var selBonuses = document.getElementById("selBonus");
+            var span = document.getElementById("bonuses");
+            if (bLoadSpan) span.innerText = "";
+            var i = 1;
+            while (i < selBonuses.options.length) {
+                var opt = selBonuses.options[i];
+                if (opt.selected) {
+                    selectedBonuses += bonuses[opt.value].BonusEnum;
+                    if (bLoadSpan) {
+                        span.innerText += (span.innerText.length > 0 ? ", " : "") + bonuses[opt.value].BonusName;
+                    }
+                }
+                i += 1;
+            }
+            return selectedBonuses;
+        }
+
+        function getSlotEnum(bLoadSpan) {
+            var selectedSlots = 0;
+            var selSlots = document.getElementById("selSlots");
+            var span = document.getElementById("slots");
+            if (bLoadSpan) span.innerText = "";
+            var i = 1;
+            while (i < selSlots.options.length) {
+                opt = selSlots.options[i];
+                if (opt.selected) {
+                    selectedSlots += slots[opt.value].enumValue;
+                    if (bLoadSpan) {
+                        span.innerText += (span.innerText.length > 0 ? ", " : "") + "[" + opt.text + "]";
+                    }
+                }
+                i++;
+            }
+            return selectedSlots;
+        }
+
+        function getQueryVariable(variable) {
+            var query = window.location.search.substring(1);
+            var vars = query.split('&');
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split('=');
+                if (decodeURIComponent(pair[0]) == variable) {
+                    return decodeURIComponent(pair[1]);
+                }
+            }
+            return null;
+        }
+
+        function update() {
+            "use strict";
+            //debugger;
+            var selectedBonuses = getBonusEnum(true);
+
+            var selectedSlots = getSlotEnum(true);
+
+            var selectedTypes = getTypeEnum(true);
+
+            var showLegacy = document.getElementById("chkShowLegacy").checked;
+
+            var showPowers = document.getElementById("chkShowPowers").checked;
+
+            var iSort = document.getElementById("selSortOrder").value;
+
+
+            var table = document.getElementById("table1");
+
+            table.removeAttribute("style");
+            while (table.rows.length > 1) {
+                table.deleteRow(-1);
+            }
+
+            table.rows[0].cells[7].style.display = (showPowers ? "" : "none");
+
+            var i = 0;
+            var sEquipBonus;
+            var sSlots;
+            var sType;
+            var row;
+            var cell;
+            var link;
+
+            // Apply sort first
+            companions.sort(function (a, b)
+            {
+                switch (iSort) {
+                    case "1":
+                        if (a.QualitySort < b.QualitySort) return -1;
+                        if ((a.QualitySort == b.QualitySort) && (a.ItemLevel > b.ItemLevel)) return -1;
+                        if ((a.QualitySort == b.QualitySort) && (a.ItemLevel == b.ItemLevel) && (a.CompanionName < b.CompanionName)) return -1;
+                        return 1;
+                        break;
+
+                    case "2":
+                        if (a.QualitySort < b.QualitySort) return -1;
+                        if ((a.QualitySort == b.QualitySort) && (a.CompanionName < b.CompanionName)) return -1;
+                        return 1;
+                        break;
+
+                    case "3":
+                        if ((a.CompanionName < b.CompanionName)) return -1;
+                        return 1;
+                        break;
+
+                    case "4":
+                        if ((a.ItemLevel > b.ItemLevel )) return -1;
+                        if ((a.ItemLevel == b.ItemLevel) && (a.CompanionName < b.CompanionName)) return -1;
+                        return 1;
+                        break;
+
+                    //case "5":
+                    //    if ((a.RequiredLevel > b.RequiredLevel)) return -1;
+                    //    if ((a.RequiredLevel == b.RequiredLevel) && (a.ItemLevel > b.ItemLevel)) return -1;
+                    //    if ((a.RequiredLevel == b.RequiredLevel) && (a.ItemLevel == b.ItemLevel) && (a.CompanionName < b.CompanionName)) return -1;
+                    //    return 1;
+                    //    break;
+
+                }
+            }); 
+
+            while (i < companions.length) {
+                sSlots = companions[i].Slots;
+                sEquipBonus = companions[i].ActiveBonus;
+                sType = companions[i].Type;
+                
+                if (bonusMatch(selectedBonuses, sEquipBonus) &&
+                    slotsMatch(selectedSlots, sSlots) &&
+                    typesMatch(selectedTypes, sType) &&
+                    (!companions[i].LegacyItem || (companions[i].LegacyItem && showLegacy)))
+                {
+                    row = table.insertRow(table.rows.length);
+                    cell = row.insertCell(0);
+                    link = document.createElement("a");
+                    link.setAttribute("href", "http://neverwinter.gamepedia.com/" + companions[i].CompanionName.replace(/\s/g, "_"));
+                    link.textContent = companions[i].CompanionName;
+                    link.target = "_blank";
+                    if (companions[i].LegacyItem)
+                    {
+                        link.textContent += " (legacy)";
+                    }
+                    cell.appendChild(link);
+                    cell.className = "nowrap " + companions[i].StartingQuality.toLowerCase();
+
+                    cell = row.insertCell(1);
+                    cell.textContent = companions[i].Type;
+
+                    cell = row.insertCell(2);
+                    cell.textContent = companions[i].Details;
+
+                    cell = row.insertCell(3);
+                    cell.textContent = companions[i].ItemLevel;
+
+                    cell = row.insertCell(4);
+                    cell.textContent = wordySlots(companions[i].Slots); 
+
+                    cell = row.insertCell(5);
+                    cell.textContent = companions[i].ActiveBonus;
+
+                    cell = row.insertCell(6);
+                    cell.textContent = companions[i].CoolDowns;
+
+                    cell = row.insertCell(7);
+                    cell.innerHTML = companions[i].Powers;
+                    cell.style.display = (showPowers ? "" : "none");
+
+                    cell = row.insertCell(8);
+                    cell.textContent = companions[i].Stats;
+
+                    cell = row.insertCell(9);
+                    cell.textContent = companions[i].ItemSlots;
+
+                }
+                i += 1;
+            }
+
+
+            if (iSort == "4" && selectedBonuses == 0 && selectedSlots == 0 && selectedTypes == 0) {
+                history.replaceState(null, null, location.protocol + "//" + location.host + location.pathname);
+            } else {
+                var sQuery = "?sort=" + iSort;
+                if (selectedBonuses != 0) {
+                    sQuery += "&b=" + selectedBonuses;
+                }
+                if (selectedSlots != 0) {
+                    sQuery += "&s=" + selectedSlots;
+                }
+                if (selectedTypes != 0) {
+                    sQuery += "&t=" + selectedTypes;
+                }
+                history.replaceState(null, null, sQuery);
+            }
+        }
+
+        function wordySlots( abbreviations)
+        {
+            var sRet = '';
+            var i = 0;
+            if (abbreviations != null)
+            {
+                while (i < abbreviations.length) {
+                    switch(abbreviations[i])
+                    {
+                        case "O":
+                            sRet += (sRet.length == 0 ? "" : ", ") + "Offense";
+                            break;
+                        case "D":
+                            sRet += (sRet.length == 0 ? "" : ", ") + "Defense";
+                            break;
+                    }
+                    i += 1;
+                }
+            }
+            return sRet;
+        }
+
+        function initialize() {
+            "use strict";
+
+            var iSort = getQueryVariable("sort");
+            var iBonus = getQueryVariable("b");
+            var iSlots = getQueryVariable("s");
+            var iTypes = getQueryVariable("t");
+
+            // Load options
+            var option;
+            var select = document.getElementById("selBonus");
+            var i = 0;
+            while (i < bonuses.length) {
+                option = document.createElement("option");
+                option.text = (i == 0 ? "<< ignored >>" : bonuses[i].BonusName)
+                option.value = i;
+                if (iBonus != null && i > 0) {
+                    option.selected = (bonuses[i].BonusEnum & iBonus) == bonuses[i].BonusEnum;
+                }
+                select.add(option);
+                i += 1;
+            }
+            if (iBonus == null) select.selectedIndex = 0;
+
+            select = document.getElementById("selSlots");
+            i = 0;
+            while (i < slots.length) {
+                slots[i].wordySlots = wordySlots(slots[i].slotTypes);
+                option = document.createElement("option");
+                option.text = (i == 0 ? "<< ignored >>" : slots[i].wordySlots);
+                option.value = i;
+                if (iSlots != null && i > 0) {
+                    option.selected = (slots[i].enumValue & iSlots) == slots[i].enumValue;
+                }
+                select.add(option);
+                i += 1;
+            }
+            if (iSlots == null) select.selectedIndex = 0;
+
+
+            select = document.getElementById("selTypes");
+            i = 0;
+            while (i < types.length) {
+                option = document.createElement("option");
+                option.text = (i == 0 ? "<< ignored >>" : types[i].CompanionType);
+                option.value = i;
+                if (iTypes != null && i > 0) {
+                    option.selected = (types[i].enumValue & iTypes) == types[i].enumValue;
+                }
+                select.add(option);
+                i += 1;
+            }
+            if (iTypes == null) select.selectedIndex = 0;
+
+
+            select = document.getElementById("selSortOrder");
+            if (iSort != null) { select.selectedIndex = iSort - 1; } else {
+                select.selectedIndex = 3;
+            }
+
+            update();
+        }
+
+        initialize();
+    </script>
+    <br /><br /><i>last updated: <script>document.write(sLastUpdated)</script></i><br />
+
+</body>
+</html>
