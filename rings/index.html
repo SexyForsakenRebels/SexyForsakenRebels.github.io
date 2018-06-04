@@ -326,7 +326,7 @@
             }
 
 
-            if (iSort == "1" && selectedBonuses == 0 && selectedSlots == 0) {
+            if (iSort == "1" && selectedBonuses == 0 && selectedSlots == 0 && selectedBindings == 0) {
                 history.replaceState(null, null, location.protocol + "//" + location.host + location.pathname);
             } else {
                 var sQuery = "?sort=" + iSort;
@@ -335,6 +335,10 @@
                 }
                 if (selectedSlots != 0) {
                     sQuery += "&s=" + selectedSlots;
+                }
+                if (selectedBindings != 0)
+                {
+                    sQuery += "&i=" + selectedBindings;
                 }
                 history.replaceState(null, null, sQuery);
             }
