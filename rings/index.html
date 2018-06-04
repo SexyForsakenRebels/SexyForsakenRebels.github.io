@@ -45,6 +45,7 @@
             <th>Slots</th>
             <th>Equip Bonus</th>
             <th>Type</th>
+            <th>Binding</th>
         </tr>
     </table>
     <script>
@@ -265,6 +266,9 @@
 
                     cell = row.insertCell(5);
                     cell.textContent = rings[i].ItemType;
+
+                    cell = row.insertCell(6);
+                    cell.textContent = rings[i].Binding;
 
                 }
                 i += 1;
