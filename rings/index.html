@@ -411,7 +411,7 @@
             while (i < select.options.length) {
                 option = select.options[i];
                 if (iBinding != null && i > 0) {
-                    option.selected = (option.value & iSlots) == option.value;
+                    option.selected = (option.value & iBinding) == option.value;
                 }
                 i += 1;
             }
