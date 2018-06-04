@@ -19,6 +19,11 @@
                 <table border="0">
                     <tr class="topAlign">
                         <td height="20%"><select id="selSlots" onchange="update()" class="topAlign" size="6" multiple></select></td>
+                        <td height="20%"><select id="selBinding" onchange="update()" class="topAlign" size="3" multiple>
+                            <option value="0"><< ignored >></option>
+                            <option value="1">Pickup</option>
+                            <option value="2">Equip</option>
+                            </select><span id="binding"></span></td>
                         <td height="20%"><label class="topAlign"><input type="checkbox" id="chkShowLegacy" onclick="javascript:update();" class="topAlign" />Show legacy?</label></td>
                         <td height="20%">
                             <select id="selSortOrder" onchange="update()">
@@ -120,6 +125,26 @@
             return true; // no values match everything
         }
 
+        function bindingMatch(bindingEnum, bingingString) {
+            var i = 1;
+            var selBindings = document.getElementById("selBinding");
+            while (i < selBindings.options.length) {
+                var opt = selBindings.options[i];
+                var thisValue = opt.value;
+                if (thisValue != "") {
+                    if ((thisValue & bindingEnum) == thisValue) {
+                        var iMatch = bingingString.toLowerCase().indexOf(opt.text.toLowerCase());
+                        if (iMatch == -1) {
+                            return false; // anything missing fails the match
+                        }
+                    }
+                }
+                i++;
+            }
+            return true; // no values match everything
+        }
+
+
         function getBonusEnum(bLoadSpan) {
             var selectedBonuses = 0;
             var selBonuses = document.getElementById("selBonus");
@@ -137,6 +162,25 @@
                 i += 1;
             }
             return selectedBonuses;
+        }
+
+        function getBindingEnum(bLoadSpan) {
+            var enumVal = 0;
+            var sel = document.getElementById("selBinding");
+            var span = document.getElementById("binding");
+            if (bLoadSpan) span.innerText = "";
+            var i = 1;
+            while (i < sel.options.length) {
+                var opt = sel.options[i];
+                if (opt.selected) {
+                    enumVal += parseInt( opt.value);
+                    if (bLoadSpan) {
+                        span.innerText += (span.innerText.length > 0 ? ", " : "") + opt.text;
+                    }
+                }
+                i += 1;
+            }
+            return enumVal;
         }
 
         function getSlotEnum(bLoadSpan) {
@@ -177,6 +221,8 @@
 
             var selectedSlots = getSlotEnum(true);
 
+            var selectedBindings = getBindingEnum(true);
+
             var showLegacy = document.getElementById("chkShowLegacy").checked;
 
             var iSort = document.getElementById("selSortOrder").value;
@@ -191,6 +237,7 @@
             var i = 0;
             var sEquipBonus;
             var sSlots;
+            var sBinding;
             var row;
             var cell;
             var link;
@@ -236,8 +283,12 @@
             while (i < rings.length) {
                 sSlots = rings[i].Slots;
                 sEquipBonus = rings[i].EquipBonus;
+                sBinding = rings[i].Binding;
                 
-                if (bonusMatch(selectedBonuses, sEquipBonus) && slotsMatch(selectedSlots, sSlots) && (!rings[i].LegacyItem || (rings[i].LegacyItem && showLegacy)))
+                if (bonusMatch(selectedBonuses, sEquipBonus) &&
+                    slotsMatch(selectedSlots, sSlots) &&
+                    bindingMatch(selectedBindings, sBinding ) && 
+                    (!rings[i].LegacyItem || (rings[i].LegacyItem && showLegacy)))
                 {
                     row = table.insertRow(table.rows.length);
                     cell = row.insertCell(0);
@@ -317,6 +368,7 @@
             var iSort = getQueryVariable("sort");
             var iBonus = getQueryVariable("b");
             var iSlots = getQueryVariable("s");
+            var iBinding = getQueryVariable("i");
 
             // Load options
             var option;
@@ -348,6 +400,19 @@
                 i += 1;
             }
             if (iSlots == null) select.selectedIndex = 0;
+
+
+            select = document.getElementById("selBinding");
+            i = 0;
+            while (i < select.options.length) {
+                option = select.options[i];
+                if (iBinding != null && i > 0) {
+                    option.selected = (option.value & iSlots) == option.value;
+                }
+                i += 1;
+            }
+            if (iBinding == null) select.selectedIndex = 0;
+
 
             select = document.getElementById("selSortOrder");
             if (iSort != null) { select.selectedIndex = iSort - 1; } else {
