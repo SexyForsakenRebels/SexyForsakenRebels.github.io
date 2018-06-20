@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Neverwinter Rings - Updated 6/1/2018</title>
+    <title>Neverwinter Rings - Updated 6/20/2018</title>
     <script>
-        var sLastUpdated = "6/1/2018";
+        var sLastUpdated = "6/20/2018";
     </script>
     <link rel="stylesheet" type="text/css" href="../Shared.css">
     <script src="rings.js"></script>
+    <script src="../Tools.js"></script>
     <script src="../Header.js"></script>
 </head>
 <body>
@@ -53,6 +54,7 @@
             <th>Binding</th>
         </tr>
     </table>
+    <div id="divTooltip"></div>
     <script>
 
         var slotTypes = {
@@ -302,6 +304,28 @@
                     }
                     cell.appendChild(link);
                     cell.className = "nowrap " + rings[i].Quality.toLowerCase();
+                    // will come back to this
+                    //cell.ringName = rings[i].RingName;
+                    //cell.toolTip = "";
+                    //cell.onmouseenter = function()
+                    //{
+                    //    var thisCell = this;
+                    //    if (thisCell.toolTip == "")
+                    //    {
+                    //        GetItemInfo(this.ringName, function (oResult) {
+                    //            thisCell.toolTip = oResult.parse.text["*"];
+                    //            document.getElementById("divTooltip").innerHTML = thisCell.toolTip;
+                    //        });
+                    //    }
+                    //    else
+                    //    {
+                    //        document.getElementById("divTooltip").innerHTML = thisCell.toolTip;
+                    //    }
+                    //}
+                    //cell.onmouseleave = function()
+                    //{
+                    //    document.getElementById("divTooltip").innerHTML = "";
+                    //}
 
                     cell = row.insertCell(1);
                     cell.textContent = rings[i].RequiredLevel;
