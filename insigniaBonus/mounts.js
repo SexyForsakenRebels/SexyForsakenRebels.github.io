@@ -1,5 +1,4 @@
-﻿var mounts = [
-{ "itemName": "Arcane Whirlwind", "slots": "BUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Power", "combatPower": "Summons your Arcane Whirlwind, who travels forward, dealing 2,796 damage to nearby enemies, and knocking aside enemies it collides with for an additional 5,591 damage.", "qualitySort": 1 },
+﻿var mounts = [{ "itemName": "Arcane Whirlwind", "slots": "BUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Power", "combatPower": "Summons your Arcane Whirlwind, who travels forward, dealing 2,796 damage to nearby enemies, and knocking aside enemies it collides with for an additional 5,591 damage.", "qualitySort": 1 },
 { "itemName": "Armored Axe Beak", "slots": "CUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Armor Penetration", "combatPower": "Summons your armored axe beak to attack nearby foes with a spinning strike dealing 6,989 to targets hit.", "qualitySort": 1 },
 { "itemName": "Armored Bulette", "slots": "CUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Deflection", "combatPower": "Summons your Armored Bulette, who roars at foes in front of you, dealing 3,994 damage and reducing the damage they deal by 10% for 8 seconds.", "qualitySort": 1 },
 { "itemName": "Armored Giant Strider", "slots": "IUU", "quality": "legendary", "legacyMount": false, "equipPower": "+4,000 Movement", "combatPower": "Summons your Armored Giant Strider to attack your target, dealing 3,455 Fire Damage damage.", "qualitySort": 1 },
@@ -35,6 +34,7 @@
 { "itemName": "Dusk Unicorn", "slots": "CEU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Life Steal", "combatPower": "", "qualitySort": 2 },
 { "itemName": "Elite Shadow Wolf", "slots": "CIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Armor Penetration", "combatPower": "", "qualitySort": 2 },
 { "itemName": "Embellished Apparatus of Gond", "slots": "CEU", "quality": "epic", "legacyMount": false, "equipPower": "Using a Daily Power grants 15% of your total Action Points over 10 seconds.", "combatPower": "", "qualitySort": 2 },
+{ "itemName": "Enchanted Broom", "slots": "RIU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Power", "combatPower": "", "qualitySort": 2 },
 { "itemName": "Enchanted Courser", "slots": "IBU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Recovery", "combatPower": "", "qualitySort": 2 },
 { "itemName": "Fancy Apparatus of Kwalish", "slots": "EEU", "quality": "epic", "legacyMount": false, "equipPower": "+2,000 Recovery", "combatPower": "", "qualitySort": 2 },
 { "itemName": "Fancy Gorgon", "slots": "REU", "quality": "epic", "legacyMount": false, "equipPower": "Using a Daily Power grants 15% of your total Action Points over 10 seconds.", "combatPower": "", "qualitySort": 2 },
