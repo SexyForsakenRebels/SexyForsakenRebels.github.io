@@ -193,3 +193,5 @@
 { "itemName": "Palomino Horse", "slots": "RB", "quality": "common", "legacyMount": false, "equipPower": "", "combatPower": "", "qualitySort": 5 },
 { "itemName": "Sabino Horse", "slots": "RE", "quality": "common", "legacyMount": false, "equipPower": "", "combatPower": "", "qualitySort": 5 },
 { "itemName": "Waterdeep Horse", "slots": "IE", "quality": "common", "legacyMount": false, "equipPower": "", "combatPower": "", "qualitySort": 5 }];
+
+
